@@ -1,0 +1,54 @@
+// h_time standard header
+
+#pragma once
+#ifndef _HITIME_
+#define _HITIME_
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+
+/*
+library made for clocking functions
+References:
+# BENCHMARKING in C++ (how to measure performance) -> https://www.youtube.com/watch?v=YG4jexlSAjc
+# Timing in C++ -> https://www.youtube.com/watch?v=oEx5vGNFrLk
+*/
+class h_time
+{
+public:
+
+	double d = 0.0f;
+	double ms = 0.0f;
+	h_time() {h_StartPoint = std::chrono::high_resolution_clock::now();}
+	
+	~h_time()
+	{
+		Stop();
+	}
+	
+	void Stop()
+	{
+		auto h_EndPoint = std::chrono::high_resolution_clock::now();
+
+		auto start = std::chrono::time_point_cast<std::chrono::microseconds>(h_StartPoint).time_since_epoch().count();
+		auto end = std::chrono::time_point_cast<std::chrono::microseconds>(h_EndPoint).time_since_epoch().count();
+
+		auto duration = end - start;
+		d = duration * 1.0f;
+		ms = duration * 0.001;
+
+		std::cout << duration << "us (" << ms << ")\n";
+	}
+
+	void delay(const int _milliseconds)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(_milliseconds));
+	}
+
+private:
+
+	std::chrono::time_point <std::chrono::high_resolution_clock> h_StartPoint;
+};
+
+#endif
